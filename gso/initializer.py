@@ -1,15 +1,15 @@
 """Module to generate initial populations of glowworms agents used by the GSO algorithm"""
 
-from lightdock.gso.swarm import Swarm
-from lightdock.gso.coordinates import CoordinatesFileReader, Coordinates
-from lightdock.error.lightdock_errors import GSOCoordinatesError
-from lightdock.gso.searchspace.landscape import LandscapePosition, DockingLandscapePosition
-from lightdock.mathutil.lrandom import MTGenerator
+from swarm import Swarm
+from coordinates import CoordinatesFileReader, Coordinates
+from gso_errors import GSOCoordinatesError
+from landscape import LandscapePosition
+from gso_random import MTGenerator
 
 
 class Initializer(object):
     """Generates a population of glowworms.
-    
+
     The landscape is determined by the ObjectiveFunction object.
     The glowworms will use the given algorithm parameters.
     """
@@ -18,12 +18,12 @@ class Initializer(object):
         self.number_of_glowworms = number_of_glowworms
         self.parameters = gso_parameters
         self.positions = []
-    
+
     def generate_glowworms(self):
         """Creates an initial population of glowworms"""
         self.positions = self.generate_landscape_positions()
         return Swarm(self.positions, self.parameters)
-    
+
     def generate_landscape_positions(self):
         """Generates the initial positions of each glowworm"""
         raise NotImplementedError()
@@ -36,7 +36,7 @@ class RandomInitializer(Initializer):
         super(RandomInitializer, self).__init__(objective_functions, number_of_glowworms, gso_parameters)
         self.bounding_box = bounding_box
         self.random_number_generator = random_number_generator
-    
+
     def generate_landscape_positions(self):
         """Generates a list of landscape positions that have been read
         from initial_population_file.
@@ -63,27 +63,27 @@ class FromFileInitializer(Initializer):
                                                   gso_parameters)
         self.dimensions = dimensions
         self.initial_population_file = initial_population_file
-    
+
     def generate_landscape_positions(self):
         """Generates a list of landscape positions that have been read
         from initial_population_file.
         """
         reader = CoordinatesFileReader(self.dimensions)
         coordinates = reader.get_coordinates_from_file(self.initial_population_file)
-        
+
         if not coordinates:
             raise GSOCoordinatesError("No coordinates have been read from %s file" % self.initial_population_file)
-        
+
         if len(coordinates) != self.number_of_glowworms:
             raise GSOCoordinatesError("Number of coordinates read and number of glowworms does not correspond")
-        
+
         positions = []
         for index in range(self.number_of_glowworms):
             positions.append(LandscapePosition(self.objective_functions[0], coordinates[index]))
 
         return [positions]
 
-    
+
 class LightdockFromFileInitializer(Initializer):
     """This initializer takes into account the complex provided by the adapter"""
     def __init__(self, adapters, scoring_functions, number_of_glowworms, gso_parameters,
@@ -98,20 +98,20 @@ class LightdockFromFileInitializer(Initializer):
         self.step_nmodes = step_nmodes
         # Patch to not mess with old simulations
         self.random_number_generator = MTGenerator(random_number_generator.seed)
-    
+
     def generate_landscape_positions(self):
         """Generates a list of landscape positions that have been read
         from initial_population_file.
         """
         reader = CoordinatesFileReader(self.dimensions)
         coordinates = reader.get_coordinates_from_file(self.initial_population_file)
-        
+
         if not coordinates:
             raise GSOCoordinatesError("No coordinates have been read from %s file" % self.initial_population_file)
-        
+
         if len(coordinates) != self.number_of_glowworms:
             raise GSOCoordinatesError("Number of coordinates read and number of glowworms does not correspond")
-        
+
         positions = []
         for i, adapter in enumerate(self.adapters):
             positions.append([])

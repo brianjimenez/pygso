@@ -1,7 +1,7 @@
 """The set of swarms of glowworm agents used in the algorithm"""
 
 from operator import attrgetter
-from lightdock.gso.glowworm import Glowworm
+from glowworm import Glowworm
 
 
 class Swarm(object):
