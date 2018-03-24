@@ -19,3 +19,8 @@ class GSOParameteresError(GSOError):
 class GSOCoordinatesError(GSOError):
     """Custom error for CoordinatesFileReader class"""
     pass
+
+
+class RandomNumberError(GSOError):
+    """Custom error for random number generation"""
+    pass

@@ -8,7 +8,7 @@ class LandscapePosition(object):
     Different spaces should implement different approaches for move() and
     distance() functions.
     """
-    def __init__(self, objective_function, coordinates, step=DEFAULT_STEP_SIZE):
+    def __init__(self, objective_function, coordinates, step=0.5):
         self.objective_function = objective_function
         self.coordinates = coordinates
         self.step = step

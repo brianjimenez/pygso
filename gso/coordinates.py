@@ -24,7 +24,7 @@ class Coordinates(object):
         """Compares for equality"""
         if self.dimension == other.dimension:
             for c1, c2 in zip(self._values, other._values):
-                if not cfloat_equals(c1, c2):
+                if not isclose(c1, c2):
                     return False
             return True
         else:
@@ -70,7 +70,7 @@ class Coordinates(object):
 
     def norm(self):
         """Calculates the norm of a coordinate"""
-        return cnorm(self._values)
+        return norm(self._values)
 
     def distance(self, other):
         """Distance between two coordinates"""
@@ -78,11 +78,11 @@ class Coordinates(object):
 
     def distance2(self, other):
         """Square distance between two coordinates"""
-        return csum_of_square_difference(self._values, other._values)
+        return sum_of_square_difference(self._values, other._values)
 
     def sum_of_squares(self):
         """Calculates the sum of squares of these coordinates"""
-        return csum_of_squares(self._values)
+        return sum_of_squares(self._values)
 
     def move(self, other, step=1.0):
         """Move from one coordinate to another a given step"""
