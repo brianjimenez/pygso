@@ -1,13 +1,14 @@
 """Glowworm's position in a given landscape."""
 
 import os
-from util import isclose, norm, sum_of_squares, sum_of_square_difference
-from gso_errors import GSOCoordinatesError
+from pygso.util import isclose, norm, sum_of_squares, sum_of_square_difference
+from pygso.gso_errors import GSOCoordinatesError
 
 
 class Coordinates(object):
     """A Coordinates object is an array of float numbers with size equal to the
     dimensions of the solution space used in the objective function."""
+
     def __init__(self, values):
         self._values = values
         self.dimension = len(self._values)
@@ -36,7 +37,7 @@ class Coordinates(object):
 
     def clone(self):
         """Get a copy of the current coordinate"""
-        return Coordinates(self._values*1)
+        return Coordinates(self._values * 1)
 
     def __add__(self, other):
         """Adds two coordinates"""
@@ -50,7 +51,7 @@ class Coordinates(object):
 
     def __sub__(self, other):
         """Subtracts two coordinates"""
-        return Coordinates([c1-c2 for c1, c2 in zip(self._values, other._values)])
+        return Coordinates([c1 - c2 for c1, c2 in zip(self._values, other._values)])
 
     def __isub__(self, other):
         """Subtracts and assigns another coordinate"""
@@ -60,12 +61,12 @@ class Coordinates(object):
 
     def __imul__(self, scalar):
         """Multiplies a coordinate by a scalar"""
-        self._values = [v*scalar for v in self._values]
+        self._values = [v * scalar for v in self._values]
         return self
 
     def __mul__(self, scalar):
         """Multiplies a coordinate by a scalar"""
-        values = [v*scalar for v in self._values]
+        values = [v * scalar for v in self._values]
         return Coordinates(values)
 
     def norm(self):
@@ -88,13 +89,13 @@ class Coordinates(object):
         """Move from one coordinate to another a given step"""
         if self != other:
             delta_x = other - self
-            delta_x *= step/delta_x.norm()
+            delta_x *= step / delta_x.norm()
             self += delta_x
         return self
 
     def __repr__(self):
         """Coordinate representation"""
-        return "(%s)" % ', '.join([str(f) for f in self._values])
+        return "(%s)" % ", ".join([str(f) for f in self._values])
 
     def __len__(self):
         return self.dimension
@@ -102,6 +103,7 @@ class Coordinates(object):
 
 class CoordinatesFileReader(object):
     """Reads spatial coordinates from a given file"""
+
     def __init__(self, dimension):
         self.dimension = dimension
 
@@ -115,9 +117,13 @@ class CoordinatesFileReader(object):
                 if len(values) == self.dimension:
                     coordinates.append(Coordinates([float(value) for value in values]))
                 else:
-                    raise Exception("dimension %d does not correspond with values in line %s" % (self.dimension,
-                                                                                                 line))
-        except Exception, e:
-            raise GSOCoordinatesError("Error reading coordinates from file: %s" % str(e))
+                    raise Exception(
+                        "dimension %d does not correspond with values in line %s"
+                        % (self.dimension, line)
+                    )
+        except Exception as e:
+            raise GSOCoordinatesError(
+                "Error reading coordinates from file: %s" % str(e)
+            )
 
         return coordinates

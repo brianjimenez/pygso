@@ -1,0 +1,11 @@
+[flake8]
+ignore = E501,W503
+exclude =
+    .git,
+    __pycache__,
+    old,
+    build,
+    dist
+    venv
+    .eggs
+max-complexity = 10

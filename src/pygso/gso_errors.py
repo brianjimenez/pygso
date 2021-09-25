@@ -3,6 +3,7 @@
 
 class GSOError(Exception):
     """GSO exception base class"""
+
     def __init__(self, cause):
         self.cause = cause
 
@@ -13,14 +14,17 @@ class GSOError(Exception):
 
 class GSOParameteresError(GSOError):
     """Custom GSOParameteres exception"""
+
     pass
 
 
 class GSOCoordinatesError(GSOError):
     """Custom error for CoordinatesFileReader class"""
+
     pass
 
 
 class RandomNumberError(GSOError):
     """Custom error for random number generation"""
+
     pass

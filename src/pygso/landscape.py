@@ -8,6 +8,7 @@ class LandscapePosition(object):
     Different spaces should implement different approaches for move() and
     distance() functions.
     """
+
     def __init__(self, objective_function, coordinates, step=0.5):
         self.objective_function = objective_function
         self.coordinates = coordinates
@@ -19,8 +20,10 @@ class LandscapePosition(object):
 
     def __eq__(self, other):
         """Compares for equality two landscape positions"""
-        return self.coordinates == other.coordinates \
+        return (
+            self.coordinates == other.coordinates
             and self.objective_function == other.objective_function
+        )
 
     def __ne__(self, other):
         """Compares for unequality two landscape positions"""
@@ -28,11 +31,15 @@ class LandscapePosition(object):
 
     def clone(self):
         """Creates a copy of this landscape position"""
-        return LandscapePosition(self.objective_function, self.coordinates.clone(), self.step)
+        return LandscapePosition(
+            self.objective_function, self.coordinates.clone(), self.step
+        )
 
     def __add__(self, other):
         """Adds two landscape positions"""
-        return LandscapePosition(self.objective_function, self.coordinates + other.coordinates)
+        return LandscapePosition(
+            self.objective_function, self.coordinates + other.coordinates
+        )
 
     def __iadd__(self, other):
         """Adds other to the current landscape position"""
@@ -41,7 +48,9 @@ class LandscapePosition(object):
 
     def __sub__(self, other):
         """Subtracts two landscape positions"""
-        return LandscapePosition(self.objective_function, self.coordinates - other.coordinates)
+        return LandscapePosition(
+            self.objective_function, self.coordinates - other.coordinates
+        )
 
     def __isub__(self, other):
         """Subtracts other to the current landscape position"""
@@ -70,7 +79,7 @@ class LandscapePosition(object):
         """Move from this landscape position to another given a fixed step"""
         if self != other:
             delta_x = other - self
-            delta_x *= (self.step / delta_x.norm())
+            delta_x *= self.step / delta_x.norm()
             self += delta_x
         return self
 
