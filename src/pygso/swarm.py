@@ -1,6 +1,7 @@
-"""The set of swarms of glowworm agents used in the algorithm"""
+"""A swarm is a collection of glowworms"""
 
-from operator import attrgetter
+from os import linesep
+from pathlib import Path
 from pygso.glowworm import Glowworm
 
 
@@ -8,7 +9,7 @@ class Swarm(object):
     """A swarm of glowworms"""
 
     def __init__(self, landscape_positions, parameters):
-        """Creates a glowworm population using a landscape_positons list and parameters"""
+        """Creates a population of glowworms using a list of landscape_positons and GSO parameters"""
         positions_per_glowworm = [[] for _ in range(len(landscape_positions[0]))]
         for function in landscape_positions:
             for glowworm_id, position in enumerate(function):
@@ -21,13 +22,13 @@ class Swarm(object):
         )
 
     def update_luciferin(self):
-        """Updates luciferin of each glowworm"""
+        """Updates luciferin of each glowworm in this swarm"""
         for glowworm in self.glowworms:
             glowworm.compute_luciferin()
 
     def movement_phase(self, rnd_generator):
         """Updates luciferin and probabilities of each glowworm to move if required
-        following GSO algorithm.
+        following GSO algorithm
         """
         selected = []
         positions = {}
@@ -50,11 +51,6 @@ class Swarm(object):
             glowworm.update_conformers(neighbor, rnd_generator)
             glowworm.update_vision_range()
 
-    def minimize_best(self):
-        """Minimizes the glowworm with better energy using a local non-gradient minimization method"""
-        best_glowworm = max(self.glowworms, key=attrgetter("scoring"))
-        best_glowworm.minimize()
-
     def get_size(self):
         """Gets the population size of this swarm of glowworms"""
         return len(self.glowworms)
@@ -62,9 +58,9 @@ class Swarm(object):
     def save(self, step, destination_path, file_name=""):
         """Saves actual population status to a file"""
         if file_name:
-            dest_file_name = "%s/%s" % (destination_path, file_name)
+            dest_file_name = Path(destination_path) / file_name
         else:
-            dest_file_name = "%s/gso_%d.out" % (destination_path, step)
+            dest_file_name = Path(destination_path) / f"gso_{step}.out"
 
         dest_file = open(dest_file_name, "w")
         dest_file.write(str(self))
@@ -72,12 +68,9 @@ class Swarm(object):
 
     def __repr__(self):
         """String representation of the population"""
-        if self.docking:
-            representation = "#Coordinates  RecID  LigID  Luciferin  Neighbor's number  Vision Range  Scoring\n"
-        else:
-            representation = (
-                "#Coordinates  Luciferin  Neighbor's number  Vision Range  Scoring\n"
-            )
+        representation = (
+            "#Coordinates  Luciferin  Neighbor's number  Vision Range  Scoring"
+        ) + linesep
         for glowworm in self.glowworms:
-            representation += str(glowworm) + "\n"
+            representation += str(glowworm) + linesep
         return representation
