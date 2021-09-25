@@ -62,12 +62,12 @@ def test_j1():
     # Function peak coordinates
     peak_coordinates = [[1.28, 0.0], [0.0, 1.58], [-0.46, -0.63]]
 
-    assert found_peaks(peak_coordinates, 2, gso.swarm.glowworms,
-        minimum_matches=2, tolerance=0.1)
+    assert found_peaks(
+        peak_coordinates, 2, gso.swarm.glowworms, minimum_matches=2, tolerance=0.1
+    )
 
 
 def test_rastrigin():
-
     class Rastrigin(ObjectiveFunction):
         """Rastrigin function"""
 
@@ -76,8 +76,8 @@ def test_rastrigin():
 
         @staticmethod
         def calculate(x, y):
-            return (
-                20.0 + (x*x - 10.0*cos(2*pi*x) + y*y - 10.0*cos(2*pi*y))
+            return 20.0 + (
+                x * x - 10.0 * cos(2 * pi * x) + y * y - 10.0 * cos(2 * pi * y)
             )
 
     objective_function = Rastrigin()
@@ -98,10 +98,29 @@ def test_rastrigin():
     gso.run(50)
 
     # Function peak coordinates
-    peak_coordinates = [[0.5, 0.5], [1.0, 1.0], [1.5, 1.5], [2.0, 2.0], [2.5, 2.5],
-                        [-0.5, -0.5], [-1.0, -1.0], [-1.5, -1.5], [-2.0, -2.0], [-2.5, -2.5],
-                        [0.5, -0.5], [1.0, -1.0], [1.5, -1.5], [2.0, -2.0], [2.5, -2.5],
-                        [-0.5, 0.5], [-1.0, 1.0], [-1.5, 1.5], [-2.0, 2.0], [-2.5, 2.5]]
+    peak_coordinates = [
+        [0.5, 0.5],
+        [1.0, 1.0],
+        [1.5, 1.5],
+        [2.0, 2.0],
+        [2.5, 2.5],
+        [-0.5, -0.5],
+        [-1.0, -1.0],
+        [-1.5, -1.5],
+        [-2.0, -2.0],
+        [-2.5, -2.5],
+        [0.5, -0.5],
+        [1.0, -1.0],
+        [1.5, -1.5],
+        [2.0, -2.0],
+        [2.5, -2.5],
+        [-0.5, 0.5],
+        [-1.0, 1.0],
+        [-1.5, 1.5],
+        [-2.0, 2.0],
+        [-2.5, 2.5],
+    ]
 
-    assert found_peaks(peak_coordinates, 2, gso.swarm.glowworms,
-        minimum_matches=4, tolerance=0.1)
+    assert found_peaks(
+        peak_coordinates, 2, gso.swarm.glowworms, minimum_matches=4, tolerance=0.1
+    )
