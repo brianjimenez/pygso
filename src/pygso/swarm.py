@@ -10,16 +10,9 @@ class Swarm(object):
 
     def __init__(self, landscape_positions, parameters):
         """Creates a population of glowworms using a list of landscape_positons and GSO parameters"""
-        positions_per_glowworm = [[] for _ in range(len(landscape_positions[0]))]
-        for function in landscape_positions:
-            for glowworm_id, position in enumerate(function):
-                positions_per_glowworm[glowworm_id].append(position)
         self.glowworms = [
-            Glowworm(positions, parameters) for positions in positions_per_glowworm
+            Glowworm(position, parameters) for position in landscape_positions
         ]
-        self.docking = (
-            landscape_positions[0][0].__class__.__name__ != "LandscapePosition"
-        )
 
     def update_luciferin(self):
         """Updates luciferin of each glowworm in this swarm"""
@@ -38,17 +31,13 @@ class Swarm(object):
             glowworm.search_neighbors(self.glowworms)
             glowworm.compute_probability_moving_toward_neighbor()
             selected.append(glowworm.select_random_neighbor(rnd_generator()))
-            positions[i] = [
-                landscape_position.clone()
-                for landscape_position in selected[-1].landscape_positions
-            ]
+            positions[i] = selected[-1].landscape_position.clone()
 
         for i in range(num_glowworms):
             glowworm = self.glowworms[i]
             neighbor = selected[i]
             position = positions[i]
             glowworm.move(neighbor, position)
-            glowworm.update_conformers(neighbor, rnd_generator)
             glowworm.update_vision_range()
 
     def get_size(self):

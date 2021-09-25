@@ -3,12 +3,12 @@ class Glowworm(object):
 
     _created_glowworms = 0
 
-    def __init__(self, landscape_positions, gso_parameters):
+    def __init__(self, landscape_position, gso_parameters):
         """Creates a glowworm agent in the algorithm.
 
         Starting coordinates are given by landscape_position object.
         """
-        self.landscape_positions = landscape_positions
+        self.landscape_position = landscape_position
         self.rho = gso_parameters.rho
         self.gamma = gso_parameters.gamma
         self.beta = gso_parameters.beta
@@ -50,27 +50,19 @@ class Glowworm(object):
     def compute_luciferin(self):
         """Updates luciferin of the current glowworm and returns its value"""
         if self.moved or self.step == 0:
-            self.scoring = sum(
-                [
-                    landscape_position.evaluate_objective_function()
-                    for landscape_position in self.landscape_positions
-                ]
-            )
+            self.scoring = self.landscape_position.evaluate_objective_function()
+
         self.luciferin = (1.0 - self.rho) * self.luciferin + self.gamma * self.scoring
         self.step += 1
         return self.luciferin
 
-    def distance(self, other, scoring_id=0):
+    def distance(self, other):
         """Calculates the distance between two glowworms"""
-        return self.landscape_positions[scoring_id].distance(
-            other.landscape_positions[scoring_id]
-        )
+        return self.landscape_position.distance(other.landscape_position)
 
-    def distance2(self, other, scoring_id=0):
+    def distance2(self, other):
         """Calculates the distance^2 between two glowworms"""
-        return self.landscape_positions[scoring_id].distance2(
-            other.landscape_positions[scoring_id]
-        )
+        return self.landscape_position.distance2(other.landscape_position)
 
     def compute_probability_moving_toward_neighbor(self):
         """Computes the probability of this glowworm to move towards any of his neighbors"""
@@ -99,25 +91,14 @@ class Glowworm(object):
             i += 1
         return self.neighbors[i - 1]
 
-    def move(self, other, landscape_positions=None):
+    def move(self, other, landscape_position=None):
         """Moves towards another glowworm"""
         self.moved = self.id != other.id
         if self.id != other.id:
-            if landscape_positions:
-                for scoring_id, position in enumerate(landscape_positions):
-                    self.landscape_positions[scoring_id].move(position)
+            if landscape_position:
+                self.landscape_position.move(landscape_position)
             else:
-                for scoring_id in range(len(self.landscape_positions)):
-                    self.landscape_positions[scoring_id].move(
-                        other.landscape_positions[scoring_id]
-                    )
-
-    def update_conformers(self, other, random_number=None):
-        """Updates the conformers structures for receptor and ligand"""
-        for scoring_id in range(len(self.landscape_positions)):
-            self.landscape_positions[scoring_id].update_conformers(
-                other.landscape_positions[scoring_id], random_number, self.scoring
-            )
+                self.landscape_position.move(other.landscape_position)
 
     def update_vision_range(self):
         """Calculates and updates this glowworm's vision range"""
@@ -130,19 +111,10 @@ class Glowworm(object):
             ),
         )
 
-    def minimize(self):
-        """Minimizes the glowworm's landscape position and updates its scoring"""
-        self.scoring = sum(
-            [
-                landscape_position.minimize()
-                for landscape_position in self.landscape_position
-            ]
-        )
-
     def __repr__(self):
         """String representation of a glowworm"""
         return "%s %12.8f %2d %5.3f %12.8f" % (
-            str(self.landscape_positions[0]),
+            str(self.landscape_position),
             self.luciferin,
             len(self.neighbors),
             self.vision_range,

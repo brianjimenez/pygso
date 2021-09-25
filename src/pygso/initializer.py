@@ -21,10 +21,10 @@ class Initializer(object):
 
     def generate_glowworms(self):
         """Creates an initial population of glowworms"""
-        self.positions = self.generate_landscape_positions()
+        self.positions = self.generate_landscape_position()
         return Swarm(self.positions, self.parameters)
 
-    def generate_landscape_positions(self):
+    def generate_landscape_position(self):
         """Generates the initial positions of each glowworm"""
         raise NotImplementedError()
 
@@ -46,7 +46,7 @@ class RandomInitializer(Initializer):
         self.bounding_box = bounding_box
         self.random_number_generator = random_number_generator
 
-    def generate_landscape_positions(self):
+    def generate_landscape_position(self):
         """Generates a list of landscape positions that have been read
         from initial_population_file.
         """
@@ -62,7 +62,7 @@ class RandomInitializer(Initializer):
             positions.append(
                 LandscapePosition(self.objective_functions[0], Coordinates(coordinates))
             )
-        return [positions]
+        return positions
 
 
 class FromFileInitializer(Initializer):
@@ -84,7 +84,7 @@ class FromFileInitializer(Initializer):
         self.dimensions = dimensions
         self.initial_population_file = initial_population_file
 
-    def generate_landscape_positions(self):
+    def generate_landscape_position(self):
         """Generates a list of landscape positions that have been read
         from initial_population_file.
         """
